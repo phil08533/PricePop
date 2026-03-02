@@ -17,18 +17,11 @@
       "supportsTablet": false,
       "bundleIdentifier": "com.pricepop.app",
       "buildNumber": "1",
-      "infoPlist": {
-        "NSUserTrackingUsageDescription": "This identifier will be used to deliver personalized ads to you.",
-        "SKAdNetworkItems": [
-          { "SKAdNetworkIdentifier": "cstr6suwn9.skadnetwork" }
-        ]
-      },
       "googleServicesFile": "./GoogleService-Info.plist",
       "config": {
         "googleSignIn": {
           "reservedClientId": "YOUR_REVERSED_CLIENT_ID"
-        },
-        "googleMobileAdsAppId": "ca-app-pub-XXXXXXXXXXXXXXXX~XXXXXXXXXX"
+        }
       }
     },
     "android": {
@@ -39,9 +32,6 @@
       "package": "com.pricepop.app",
       "versionCode": 1,
       "googleServicesFile": "./google-services.json",
-      "config": {
-        "googleMobileAdsAppId": "ca-app-pub-XXXXXXXXXXXXXXXX~XXXXXXXXXX"
-      },
       "permissions": [
         "INTERNET",
         "ACCESS_NETWORK_STATE",
@@ -65,19 +55,6 @@
           "backgroundColor": "#0F0F1A"
         }
       ],
-      [
-        "react-native-google-mobile-ads",
-        {
-          "androidAppId": "ca-app-pub-XXXXXXXXXXXXXXXX~XXXXXXXXXX",
-          "iosAppId": "ca-app-pub-XXXXXXXXXXXXXXXX~XXXXXXXXXX"
-        }
-      ],
-      [
-        "@react-native-google-signin/google-signin",
-        {
-          "iosUrlScheme": "com.googleusercontent.apps.YOUR_CLIENT_ID"
-        }
-      ]
     ],
     "experiments": {
       "typedRoutes": true
@@ -100,11 +77,6 @@
       },
       "amazon": {
         "affiliateTag": "YOUR-AFFILIATE-TAG-20"
-      },
-      "admob": {
-        "bannerAdUnitId": "ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX",
-        "rewardedAdUnitId": "ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX",
-        "interstitialAdUnitId": "ca-app-pub-XXXXXXXXXXXXXXXX/XXXXXXXXXX"
       }
     }
   }

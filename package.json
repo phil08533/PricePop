@@ -38,13 +38,7 @@
     "@react-native-async-storage/async-storage": "1.23.1",
     "firebase": "^10.12.0",
     "zustand": "^4.5.0",
-    "react-native-google-mobile-ads": "^13.0.0",
-    "@react-native-google-signin/google-signin": "^12.0.0",
-    "react-native-linear-gradient": "^2.8.3",
-    "react-native-mmkv": "^2.12.0",
-    "@shopify/flash-list": "1.6.3",
     "moti": "^0.28.0",
-    "lottie-react-native": "6.7.0",
     "date-fns": "^3.6.0",
     "nanoid": "^5.0.0"
   },
