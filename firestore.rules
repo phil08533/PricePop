@@ -1,0 +1,84 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isAuth() && request.auth.uid == uid;
+    }
+
+    function isAdmin() {
+      return isAuth() && request.auth.token.admin == true;
+    }
+
+    // Anti-cheat: score can't exceed per-session ceiling
+    function validScore(score) {
+      return score is int && score >= 0 && score <= 5000;
+    }
+
+    // ── Users ─────────────────────────────────────────────────────────────────
+
+    match /users/{uid} {
+      allow read: if isAuth();
+      allow create: if isOwner(uid);
+      allow update: if isOwner(uid)
+        && request.resource.data.uid == uid           // uid immutable
+        && request.resource.data.createdAt == resource.data.createdAt  // created immutable
+        && (!request.resource.data.keys().hasAny(['isPremium', 'adsRemoved'])
+            || resource.data.isPremium == request.resource.data.isPremium); // premium set server-side
+      allow delete: if false; // soft delete only
+    }
+
+    // ── Products ──────────────────────────────────────────────────────────────
+
+    match /products/{productId} {
+      allow read: if isAuth();
+      allow write: if isAdmin();
+    }
+
+    // ── Game Sessions ─────────────────────────────────────────────────────────
+
+    match /sessions/{sessionId} {
+      allow read: if isOwner(resource.data.uid);
+      allow create: if isOwner(request.resource.data.uid)
+        && validScore(request.resource.data.score);
+      allow update: if isOwner(resource.data.uid)
+        && validScore(request.resource.data.score)
+        && resource.data.uid == request.resource.data.uid   // uid immutable
+        && resource.data.startedAt == request.resource.data.startedAt; // start time immutable
+      allow delete: if false;
+    }
+
+    // ── Leaderboards ──────────────────────────────────────────────────────────
+    // Daily leaderboard — keyed by date "yyyy-MM-dd"
+    match /leaderboard_daily/{dateId}/scores/{uid} {
+      allow read: if isAuth();
+      allow write: if isOwner(uid)
+        && validScore(request.resource.data.score);
+    }
+
+    match /leaderboard_weekly/{weekId}/scores/{uid} {
+      allow read: if isAuth();
+      allow write: if isOwner(uid)
+        && validScore(request.resource.data.score);
+    }
+
+    match /leaderboard_all_time/{docId}/scores/{uid} {
+      allow read: if isAuth();
+      allow write: if isOwner(uid)
+        && validScore(request.resource.data.score);
+    }
+
+    // ── Daily Challenges ──────────────────────────────────────────────────────
+
+    match /daily_challenges/{dateId} {
+      allow read: if isAuth();
+      allow write: if isAdmin();
+    }
+  }
+}
