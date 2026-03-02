@@ -1,18 +1,12 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Modal,
-  Platform,
 } from 'react-native';
-import {
-  RewardedAd,
-  RewardedAdEventType,
-  TestIds,
-} from 'react-native-google-mobile-ads';
-import { ADMOB, COLORS, FONT_SIZES, SPACING, RADIUS } from '@constants/index';
+import { COLORS, FONT_SIZES, SPACING, RADIUS } from '@constants/index';
 
 export type RewardType = 'extra_life' | 'double_xp' | 'streak_save';
 
@@ -47,53 +41,12 @@ export function RewardedAdModal({
   onRewardEarned,
   onDismiss,
 }: RewardedAdModalProps) {
-  const adRef = useRef<RewardedAd | null>(null);
   const copy = REWARD_COPY[rewardType];
 
-  const adUnitId = __DEV__
-    ? TestIds.REWARDED
-    : Platform.OS === 'ios'
-    ? ADMOB.REWARDED_IOS
-    : ADMOB.REWARDED_ANDROID;
-
-  useEffect(() => {
-    if (!visible) return;
-
-    const ad = RewardedAd.createForAdRequest(adUnitId, {
-      requestNonPersonalizedAdsOnly: false,
-    });
-
-    const rewardListener = ad.addAdEventListener(
-      RewardedAdEventType.EARNED_REWARD,
-      () => {
-        onRewardEarned(rewardType);
-      }
-    );
-
-    const closeListener = ad.addAdEventListener(
-      RewardedAdEventType.CLOSED,
-      () => {
-        onDismiss();
-      }
-    );
-
-    ad.load();
-    adRef.current = ad;
-
-    return () => {
-      rewardListener();
-      closeListener();
-    };
-  }, [visible]);
-
   const handleWatchAd = () => {
-    if (adRef.current?.loaded) {
-      adRef.current.show();
-    } else {
-      // Ad not loaded yet — grant reward anyway to not frustrate user
-      onRewardEarned(rewardType);
-      onDismiss();
-    }
+    // Ads not supported in Expo Go — grant reward directly
+    onRewardEarned(rewardType);
+    onDismiss();
   };
 
   return (
