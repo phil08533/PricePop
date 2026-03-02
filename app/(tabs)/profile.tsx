@@ -13,6 +13,13 @@ import { useAuthStore } from '@stores/authStore';
 import { COLORS, FONT_SIZES, SPACING, RADIUS, ACHIEVEMENTS } from '@constants/index';
 import { xpForNextLevel } from '@services/userService';
 
+// Replace these with your hosted URLs before shipping to production
+const LEGAL_URLS = {
+  privacyPolicy: 'https://YOUR_DOMAIN/privacy-policy',
+  affiliateDisclosure: 'https://YOUR_DOMAIN/affiliate-disclosure',
+  termsOfService: 'https://YOUR_DOMAIN/terms-of-service',
+};
+
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const { profile, signOut } = useAuthStore();
@@ -116,9 +123,18 @@ export default function ProfileScreen() {
       {/* Settings */}
       <Text style={styles.sectionTitle}>Settings</Text>
       <View style={styles.settingsCard}>
-        <SettingsRow label="Privacy Policy" onPress={() => {}} />
-        <SettingsRow label="Affiliate Disclosure" onPress={() => {}} />
-        <SettingsRow label="Terms of Service" onPress={() => {}} />
+        <SettingsRow
+          label="Privacy Policy"
+          onPress={() => router.push({ pathname: '/legal', params: { title: 'Privacy Policy', url: LEGAL_URLS.privacyPolicy } })}
+        />
+        <SettingsRow
+          label="Affiliate Disclosure"
+          onPress={() => router.push({ pathname: '/legal', params: { title: 'Affiliate Disclosure', url: LEGAL_URLS.affiliateDisclosure } })}
+        />
+        <SettingsRow
+          label="Terms of Service"
+          onPress={() => router.push({ pathname: '/legal', params: { title: 'Terms of Service', url: LEGAL_URLS.termsOfService } })}
+        />
         <SettingsRow
           label="Sign Out"
           onPress={handleSignOut}

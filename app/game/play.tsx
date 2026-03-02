@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback, useState } from 'react';
 import {
   View,
   Text,
@@ -20,6 +20,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { MotiView } from 'moti';
 import { useGameStore } from '@stores/gameStore';
+import { RewardedAdModal } from '@components/ads/RewardedAdModal';
 import { COLORS, FONT_SIZES, SPACING, RADIUS, GAME } from '@constants/index';
 import type { GameMode, PriceOption } from '@types/index';
 
@@ -49,6 +50,7 @@ export default function PlayScreen() {
     decrementTimer,
   } = useGameStore();
 
+  const [adModalVisible, setAdModalVisible] = useState(false);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const slideAnim = useSharedValue(0);
 
@@ -102,8 +104,16 @@ export default function PlayScreen() {
   }, []);
 
   const handleRewardedAdLife = () => {
+    setAdModalVisible(true);
+  };
+
+  const handleAdRewardEarned = () => {
     useLife();
-    // TODO: show actual rewarded ad
+    setAdModalVisible(false);
+  };
+
+  const handleAdDismiss = () => {
+    setAdModalVisible(false);
   };
 
   const handleSkipAd = () => {
@@ -291,6 +301,13 @@ export default function PlayScreen() {
           </TouchableOpacity>
         </View>
       )}
+
+      <RewardedAdModal
+        visible={adModalVisible}
+        rewardType="extra_life"
+        onRewardEarned={handleAdRewardEarned}
+        onDismiss={handleAdDismiss}
+      />
     </View>
   );
 }
